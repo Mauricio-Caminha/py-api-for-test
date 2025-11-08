@@ -10,23 +10,27 @@ class TestUserController:
     @patch('src.services.user_service.get_all_users', new_callable=AsyncMock)
     async def test_get_all_users(self, mock_get_all_users):
         """Should return a list of users"""
-        mock_get_all_users.return_value = [User(id="1", name="John", email="john@example.com")]
+        mock_get_all_users.return_value = [
+            User(id="1", name="John", email="john@example.com", age=30)
+        ]
         
         result = await get_all_users()
         
         assert len(result) == 1
         assert result[0].name == "John"
+        assert result[0].email == "john@example.com"
     
     @patch('src.services.user_service.get_user_by_id', new_callable=AsyncMock)
     async def test_get_user_by_id_when_exists(self, mock_get_user_by_id):
         """Should return user when id exists"""
-        mock_user = User(id="1", name="John", email="john@example.com")
+        mock_user = User(id="1", name="John", email="john@example.com", age=30)
         mock_get_user_by_id.return_value = mock_user
         
         result = await get_user_by_id("1")
         
         assert result.id == "1"
         assert result.name == "John"
+        assert result.age == 30
     
     @patch('src.services.user_service.get_user_by_id', new_callable=AsyncMock)
     async def test_get_user_by_id_when_not_exists(self, mock_get_user_by_id):
@@ -42,26 +46,28 @@ class TestUserController:
     @patch('src.services.user_service.create_user', new_callable=AsyncMock)
     async def test_create_user(self, mock_create_user):
         """Should create a new user"""
-        user_data = CreateUserDto(name="Jane", email="jane@example.com")
-        mock_user = User(id="2", name="Jane", email="jane@example.com")
+        user_data = CreateUserDto(name="Jane", email="jane@example.com", age=25)
+        mock_user = User(id="2", name="Jane", email="jane@example.com", age=25)
         mock_create_user.return_value = mock_user
         
         result = await create_user(user_data)
         
         assert result.id == "2"
         assert result.name == "Jane"
+        assert result.age == 25
     
     @patch('src.services.user_service.update_user', new_callable=AsyncMock)
     async def test_update_user_when_exists(self, mock_update_user):
         """Should update user when id exists"""
-        user_data = UpdateUserDto(name="John Doe", email="john.doe@example.com")
-        mock_user = User(id="1", name="John Doe", email="john.doe@example.com")
+        user_data = UpdateUserDto(name="John Doe", email="john.doe@example.com", age=31)
+        mock_user = User(id="1", name="John Doe", email="john.doe@example.com", age=31)
         mock_update_user.return_value = mock_user
         
         result = await update_user("1", user_data)
         
         assert result.id == "1"
         assert result.name == "John Doe"
+        assert result.age == 31
     
     @patch('src.services.user_service.update_user', new_callable=AsyncMock)
     async def test_update_user_when_not_exists(self, mock_update_user):
