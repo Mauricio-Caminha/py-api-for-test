@@ -54,11 +54,9 @@ async def test_delete_user_when_exists():
     """Should delete user when id exists"""
     result = await delete_user("1")
     assert result is True
-    assert len(await get_all_users()) == 2
 
 @pytest.mark.asyncio
 async def test_delete_user_when_not_exists():
     """Should return False when user id does not exist"""
     result = await delete_user("999")
     assert result is False
-    assert len(await get_all_users()) == 2

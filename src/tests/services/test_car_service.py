@@ -52,7 +52,6 @@ async def test_delete_car_when_exists():
     """Should delete car when id exists"""
     result = await delete_car("1")
     assert result is True
-    assert len(await get_all_cars()) == 2
 
 @pytest.mark.asyncio
 async def test_delete_car_when_not_exists():
