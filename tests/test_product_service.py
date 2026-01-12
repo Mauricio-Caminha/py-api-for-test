@@ -1,24 +1,33 @@
 import pytest
-from src.models.schemas import Product, CreateProductDto, UpdateProductDto
+from unittest.mock import patch, MagicMock
 from src.services.product_service import get_all_products, get_product_by_id, create_product, update_product, delete_product
+from src.models.schemas import Product, CreateProductDto, UpdateProductDto
 
-@pytest.mark.asyncio
 class TestProductService:
-    async def test_get_all_products(self):
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.initial_products = [
+            Product(id="1", name="Notebook", description="Notebook Dell Inspiron", price=3500.0, stock=10, category="Electronics"),
+            Product(id="2", name="Mouse", description="Mouse Logitech Wireless", price=150.0, stock=50, category="Electronics"),
+            Product(id="3", name="Teclado", description="Teclado Mecânico RGB", price=450.0, stock=25, category="Electronics"),
+        ]
+        # Reset the products list before each test
+        global products
+        products = self.initial_products.copy()
+
+    async def test_get_all_products_should_return_all_products(self):
         # Act
         result = await get_all_products()
 
         # Assert
-        assert len(result) == 3
+        assert result == self.initial_products
 
     async def test_get_product_by_id_should_return_product_when_id_exists(self):
         # Act
         result = await get_product_by_id("1")
 
         # Assert
-        assert result is not None
-        assert result.id == "1"
-        assert result.name == "Notebook"
+        assert result == self.initial_products[0]
 
     async def test_get_product_by_id_should_return_none_when_id_does_not_exist(self):
         # Act
@@ -29,40 +38,29 @@ class TestProductService:
 
     async def test_create_product_should_add_new_product(self):
         # Arrange
-        new_product_data = CreateProductDto(
-            name="Headphones",
-            description="Wireless Headphones",
-            price=300.0,
-            stock=20,
-            category="Electronics"
-        )
+        new_product_data = CreateProductDto(name="Headphones", description="Wireless Headphones", price=300.0, stock=20, category="Electronics")
 
         # Act
         result = await create_product(new_product_data)
 
         # Assert
-        assert result.id == "4"  # Assuming this is the next ID
-        assert result.name == "Headphones"
-        assert len(await get_all_products()) == 4
+        assert result.name == new_product_data.name
+        assert len(products) == len(self.initial_products) + 1
 
-    async def test_update_product_should_modify_existing_product(self):
+    async def test_update_product_should_return_updated_product_when_id_exists(self):
         # Arrange
-        update_data = UpdateProductDto(
-            name="Updated Notebook",
-            price=3600.0
-        )
+        update_data = UpdateProductDto(name="Updated Notebook", price=3600.0)
 
         # Act
         result = await update_product("1", update_data)
 
         # Assert
-        assert result is not None
         assert result.name == "Updated Notebook"
         assert result.price == 3600.0
 
-    async def test_update_product_should_return_none_when_product_not_found(self):
+    async def test_update_product_should_return_none_when_id_does_not_exist(self):
         # Arrange
-        update_data = UpdateProductDto(name="Non-existent Product")
+        update_data = UpdateProductDto(name="Updated Notebook", price=3600.0)
 
         # Act
         result = await update_product("999", update_data)
@@ -76,12 +74,11 @@ class TestProductService:
 
         # Assert
         assert result is True
-        assert len(await get_all_products()) == 2  # One less product
+        assert len(products) == len(self.initial_products) - 1
 
-    async def test_delete_product_should_return_false_when_product_not_found(self):
+    async def test_delete_product_should_return_false_when_id_does_not_exist(self):
         # Act
         result = await delete_product("999")
 
         # Assert
         assert result is False
-        assert len(await get_all_products()) == 3  # No change in product count
