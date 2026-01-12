@@ -1,6 +1,7 @@
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
 from datetime import datetime
+from src.types.enums import OrderStatus, ProductCategory, CarColor
 
 
 class User(BaseModel):
@@ -27,7 +28,7 @@ class Car(BaseModel):
     brand: str
     model: str
     year: int
-    color: str
+    color: CarColor
     price: float
 
 
@@ -35,7 +36,7 @@ class CreateCarDto(BaseModel):
     brand: str
     model: str
     year: int
-    color: str
+    color: CarColor
     price: float
 
 
@@ -43,7 +44,7 @@ class UpdateCarDto(BaseModel):
     brand: Optional[str] = None
     model: Optional[str] = None
     year: Optional[int] = None
-    color: Optional[str] = None
+    color: Optional[CarColor] = None
     price: Optional[float] = None
 
 
@@ -53,7 +54,7 @@ class Product(BaseModel):
     description: str
     price: float
     stock: int
-    category: str
+    category: ProductCategory
 
 
 class CreateProductDto(BaseModel):
@@ -61,7 +62,7 @@ class CreateProductDto(BaseModel):
     description: str
     price: float
     stock: int
-    category: str
+    category: ProductCategory
 
 
 class UpdateProductDto(BaseModel):
@@ -69,7 +70,7 @@ class UpdateProductDto(BaseModel):
     description: Optional[str] = None
     price: Optional[float] = None
     stock: Optional[int] = None
-    category: Optional[str] = None
+    category: Optional[ProductCategory] = None
 
 
 class OrderItem(BaseModel):
@@ -83,7 +84,7 @@ class Order(BaseModel):
     userId: str
     items: list[OrderItem]
     total: float
-    status: Literal["pending", "processing", "completed", "cancelled"]
+    status: OrderStatus
     createdAt: str
 
 
@@ -91,12 +92,13 @@ class CreateOrderDto(BaseModel):
     userId: str
     items: list[OrderItem]
     total: Optional[float] = None
-    status: Optional[Literal["pending", "processing", "completed", "cancelled"]] = "pending"
+    status: Optional[OrderStatus] = OrderStatus.PENDING
 
 
 class UpdateOrderDto(BaseModel):
     userId: Optional[str] = None
     items: Optional[list[OrderItem]] = None
     total: Optional[float] = None
+    status: Optional[OrderStatus] = None
     status: Optional[Literal["pending", "processing", "completed", "cancelled"]] = None
 

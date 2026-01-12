@@ -1,11 +1,12 @@
 from typing import Optional
 from src.models.schemas import Car, CreateCarDto, UpdateCarDto
+from src.types.enums import CarColor
 
 # Simulação de banco de dados em memória
 cars: list[Car] = [
-    Car(id="1", brand="Toyota", model="Corolla", year=2020, color="White", price=85000.0),
-    Car(id="2", brand="Honda", model="Civic", year=2021, color="Black", price=92000.0),
-    Car(id="3", brand="Ford", model="Focus", year=2019, color="Red", price=75000.0),
+    Car(id="1", brand="Toyota", model="Corolla", year=2020, color=CarColor.WHITE, price=85000.0),
+    Car(id="2", brand="Honda", model="Civic", year=2021, color=CarColor.BLACK, price=92000.0),
+    Car(id="3", brand="Ford", model="Focus", year=2019, color=CarColor.RED, price=75000.0),
 ]
 
 

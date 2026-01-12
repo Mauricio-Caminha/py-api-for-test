@@ -1,5 +1,6 @@
 from typing import Optional
 from src.models.schemas import Product, CreateProductDto, UpdateProductDto
+from src.types.enums import ProductCategory
 
 # Simulação de banco de dados em memória
 products: list[Product] = [
@@ -9,7 +10,7 @@ products: list[Product] = [
         description="Notebook Dell Inspiron",
         price=3500.0,
         stock=10,
-        category="Electronics",
+        category=ProductCategory.ELECTRONICS,
     ),
     Product(
         id="2",
@@ -17,7 +18,7 @@ products: list[Product] = [
         description="Mouse Logitech Wireless",
         price=150.0,
         stock=50,
-        category="Electronics",
+        category=ProductCategory.ELECTRONICS,
     ),
     Product(
         id="3",
@@ -25,7 +26,7 @@ products: list[Product] = [
         description="Teclado Mecânico RGB",
         price=450.0,
         stock=25,
-        category="Electronics",
+        category=ProductCategory.ELECTRONICS,
     ),
 ]
 

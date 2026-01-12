@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from src.models.schemas import Order, CreateOrderDto, UpdateOrderDto, OrderItem
+from src.types.enums import OrderStatus
 
 # Simulação de banco de dados em memória
 orders: list[Order] = [
@@ -9,7 +10,7 @@ orders: list[Order] = [
         userId="1",
         items=[OrderItem(productId="1", quantity=2, price=3500.0)],
         total=7000.0,
-        status="pending",
+        status=OrderStatus.PENDING,
         createdAt="2025-11-07T18:18:08.792Z",
     ),
     Order(
@@ -17,7 +18,7 @@ orders: list[Order] = [
         userId="2",
         items=[OrderItem(productId="2", quantity=1, price=150.0)],
         total=150.0,
-        status="completed",
+        status=OrderStatus.COMPLETED,
         createdAt="2025-11-07T18:18:08.792Z",
     ),
     Order(
@@ -25,7 +26,7 @@ orders: list[Order] = [
         userId="1",
         items=[OrderItem(productId="3", quantity=1, price=450.0)],
         total=450.0,
-        status="processing",
+        status=OrderStatus.PROCESSING,
         createdAt="2025-11-07T18:18:08.792Z",
     ),
 ]
@@ -41,7 +42,7 @@ async def get_order_by_id(order_id: str) -> Optional[Order]:
 
 async def create_order(order_data: CreateOrderDto) -> Order:
     total = order_data.total if order_data.total is not None else 0.0
-    status = order_data.status if order_data.status is not None else "pending"
+    status = order_data.status if order_data.status is not None else OrderStatus.PENDING
     
     new_order = Order(
         id=str(len(orders) + 1),
